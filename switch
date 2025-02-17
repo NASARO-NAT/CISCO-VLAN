@@ -1,0 +1,55 @@
+enable
+configure terminal
+
+vlan 10
+ name REDE_ADMIN
+ exit
+
+vlan 20
+ name REDE_FINANCEIRO
+ exit
+
+vlan 30
+ name REDE_TI
+ exit
+
+vlan 40
+ name REDE_VOIP
+ exit
+
+vlan 50
+ name REDE_GUEST
+ exit
+
+interface range GigabitEthernet0/1-2
+ switchport mode access
+ switchport access vlan 10
+ description Porta Administracao
+
+interface range GigabitEthernet0/3-4
+ switchport mode access
+ switchport access vlan 20
+ description Porta Financeiro
+
+interface range GigabitEthernet0/5-6
+ switchport mode access
+ switchport access vlan 30
+ description Porta TI
+
+interface range GigabitEthernet0/7-8
+ switchport mode access
+ switchport access vlan 40
+ description Porta VoIP
+
+interface range GigabitEthernet0/9-10
+ switchport mode access
+ switchport access vlan 50
+ description Porta Guest (Wi-Fi)
+
+interface GigabitEthernet0/24
+ switchport mode trunk
+ switchport trunk allowed vlan 10,20,30,40,50
+ description Conexao Trunk para Roteador/Switch
+
+exit
+write memory
