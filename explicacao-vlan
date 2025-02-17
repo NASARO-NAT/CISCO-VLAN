@@ -1,0 +1,120 @@
+Configuração do Switch
+bash
+Copiar
+Editar
+enable
+configure terminal
+1. Criando VLANs
+bash
+Copiar
+Editar
+vlan 10
+ name REDE_ADMIN
+ exit
+
+vlan 20
+ name REDE_FINANCEIRO
+ exit
+
+vlan 30
+ name REDE_TI
+ exit
+
+vlan 40
+ name REDE_VOIP
+ exit
+
+vlan 50
+ name REDE_GUEST
+ exit
+🔹 Explicação:
+
+Criamos cinco VLANs e atribuimos um nome a cada uma para identificação.
+O comando exit finaliza a configuração de cada VLAN.
+2. Atribuindo Portas às VLANs
+Agora, vamos configurar as portas do switch para pertencerem às VLANs corretas.
+
+bash
+Copiar
+Editar
+interface range GigabitEthernet0/1-2
+ switchport mode access
+ switchport access vlan 10
+ description Porta Administração
+
+interface range GigabitEthernet0/3-4
+ switchport mode access
+ switchport access vlan 20
+ description Porta Financeiro
+
+interface range GigabitEthernet0/5-6
+ switchport mode access
+ switchport access vlan 30
+ description Porta TI
+
+interface range GigabitEthernet0/7-8
+ switchport mode access
+ switchport access vlan 40
+ description Porta VoIP
+
+interface range GigabitEthernet0/9-10
+ switchport mode access
+ switchport access vlan 50
+ description Porta Guest (Wi-Fi)
+🔹 Explicação:
+
+interface range GigabitEthernet0/1-2: Configura as portas 1 e 2 para a VLAN 10 (Administração).
+switchport mode access: Define a porta como modo Access, ou seja, pertence apenas a uma VLAN.
+switchport access vlan X: Atribui a porta à VLAN X.
+description: Adiciona uma descrição para facilitar a identificação.
+3. Configurando uma Porta Trunk
+A porta Trunk é usada para permitir que várias VLANs passem pela mesma conexão, geralmente para se comunicar com um roteador ou outro switch.
+
+bash
+Copiar
+Editar
+interface GigabitEthernet0/24
+ switchport mode trunk
+ switchport trunk allowed vlan 10,20,30,40,50
+ description Conexão Trunk para Roteador/Switch
+🔹 Explicação:
+
+interface GigabitEthernet0/24: Escolhemos a porta 24 como trunk.
+switchport mode trunk: Configura a porta no modo Trunk.
+switchport trunk allowed vlan 10,20,30,40,50: Permite que todas as VLANs criadas passem por essa porta.
+4. Salvando as Configurações
+bash
+Copiar
+Editar
+exit
+write memory
+🔹 Explicação:
+
+exit: Sai do modo de configuração.
+write memory: Salva a configuração para que não seja perdida após um reboot.
+Comandos de Verificação
+Após configurar as VLANs, use os seguintes comandos para verificar se tudo está correto:
+
+bash
+Copiar
+Editar
+show vlan brief
+🔹 Mostra todas as VLANs criadas e quais portas pertencem a cada VLAN.
+
+bash
+Copiar
+Editar
+show interfaces trunk
+🔹 Exibe quais portas estão configuradas como trunk e quais VLANs estão permitidas.
+
+bash
+Copiar
+Editar
+show running-config
+🔹 Exibe todas as configurações atuais do switch.
+
+Resumo
+✅ Criamos 5 VLANs para diferentes setores.
+✅ Atribuímos portas específicas para cada VLAN.
+✅ Configuramos uma porta trunk para comunicação entre VLANs.
+✅ Salvamos e verificamos as configurações.
