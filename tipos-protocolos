@@ -1,0 +1,179 @@
+1. Configuração do BGP (Border Gateway Protocol)
+O BGP é um protocolo de roteamento externo usado principalmente para conectar diferentes sistemas autônomos (AS), como ISPs e grandes empresas.
+
+Topologia
+Roteador 1 (R1): AS 65001
+Roteador 2 (R2): AS 65002
+Interligação entre R1 (192.168.12.1) ↔ R2 (192.168.12.2)
+Configuração do Roteador 1 (R1 - AS 65001)
+bash
+Copiar
+Editar
+enable
+configure terminal
+hostname R1
+
+# Configurar interface de comunicação com R2
+interface GigabitEthernet0/0
+ ip address 192.168.12.1 255.255.255.252
+ no shutdown
+
+# Configuração do BGP
+router bgp 65001
+ neighbor 192.168.12.2 remote-as 65002   # Definir o vizinho BGP
+ network 10.10.10.0 mask 255.255.255.0  # Anunciar uma rede interna
+
+# Verificação
+exit
+write memory
+show ip bgp summary
+Configuração do Roteador 2 (R2 - AS 65002)
+bash
+Copiar
+Editar
+enable
+configure terminal
+hostname R2
+
+# Configurar interface de comunicação com R1
+interface GigabitEthernet0/0
+ ip address 192.168.12.2 255.255.255.252
+ no shutdown
+
+# Configuração do BGP
+router bgp 65002
+ neighbor 192.168.12.1 remote-as 65001  # Configurar o vizinho BGP
+ network 20.20.20.0 mask 255.255.255.0  # Anunciar uma rede interna
+
+# Verificação
+exit
+write memory
+show ip bgp summary
+Comandos para Verificação do BGP
+bash
+Copiar
+Editar
+show ip bgp
+show ip bgp neighbors
+show ip bgp summary
+2. Configuração do OSPF (Open Shortest Path First)
+O OSPF é um protocolo de roteamento dinâmico de estado de enlace. Ele é baseado em áreas e usa o algoritmo Dijkstra para calcular as rotas mais curtas.
+
+Topologia
+R1: 192.168.1.1/24
+R2: 192.168.2.1/24
+Ambos os roteadores pertencem à Área 0
+Configuração do Roteador 1 (R1)
+bash
+Copiar
+Editar
+enable
+configure terminal
+hostname R1
+
+# Configuração da interface
+interface GigabitEthernet0/0
+ ip address 192.168.1.1 255.255.255.0
+ no shutdown
+
+# Configuração do OSPF
+router ospf 1
+ network 192.168.1.0 0.0.0.255 area 0
+ network 10.10.10.0 0.0.0.255 area 0  # Outra rede a ser anunciada
+
+exit
+write memory
+show ip ospf neighbor
+Configuração do Roteador 2 (R2)
+bash
+Copiar
+Editar
+enable
+configure terminal
+hostname R2
+
+# Configuração da interface
+interface GigabitEthernet0/0
+ ip address 192.168.2.1 255.255.255.0
+ no shutdown
+
+# Configuração do OSPF
+router ospf 1
+ network 192.168.2.0 0.0.0.255 area 0
+ network 20.20.20.0 0.0.0.255 area 0
+
+exit
+write memory
+show ip ospf neighbor
+Comandos para Verificação do OSPF
+bash
+Copiar
+Editar
+show ip ospf
+show ip ospf database
+show ip ospf neighbor
+show ip route ospf
+3. Configuração do EIGRP (Enhanced Interior Gateway Routing Protocol)
+O EIGRP é um protocolo proprietário da Cisco baseado em vetor de distância híbrido, oferecendo rapidez na convergência e suporte a múltiplas métricas.
+
+Topologia
+R1: 192.168.3.1/24
+R2: 192.168.4.1/24
+Autonomous System (AS): 100
+Configuração do Roteador 1 (R1)
+bash
+Copiar
+Editar
+enable
+configure terminal
+hostname R1
+
+# Configuração da interface
+interface GigabitEthernet0/0
+ ip address 192.168.3.1 255.255.255.0
+ no shutdown
+
+# Configuração do EIGRP
+router eigrp 100
+ network 192.168.3.0 0.0.0.255
+ network 10.10.10.0 0.0.0.255
+ no auto-summary  # Desabilita sumarização automática
+
+exit
+write memory
+show ip eigrp neighbors
+Configuração do Roteador 2 (R2)
+bash
+Copiar
+Editar
+enable
+configure terminal
+hostname R2
+
+# Configuração da interface
+interface GigabitEthernet0/0
+ ip address 192.168.4.1 255.255.255.0
+ no shutdown
+
+# Configuração do EIGRP
+router eigrp 100
+ network 192.168.4.0 0.0.0.255
+ network 20.20.20.0 0.0.0.255
+ no auto-summary
+
+exit
+write memory
+show ip eigrp neighbors
+Comandos para Verificação do EIGRP
+bash
+Copiar
+Editar
+show ip eigrp neighbors
+show ip eigrp topology
+show ip route eigrp
+Conclusão
+Aqui configuramos os três principais protocolos de roteamento dinâmico:
+
+✅ BGP – Usado para roteamento entre sistemas autônomos na internet.
+✅ OSPF – Melhor para redes internas grandes e escaláveis.
+✅ EIGRP – Melhor para redes Cisco com alta eficiência.
